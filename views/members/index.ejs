@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-rc4/dist/css/adminlte.min.css"/>
+    
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="logo">POS APP</div>
+    <a href="/dashboard" class="active">Dashboard</a>
+    <a href="/members">Members</a>
+    <a href="#">Transactions</a>
+    <a href="/users">Users</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div></div>
+        <div class="profile">
+            <span>Admin Pos</span>
+            <div class="dropdown">
+                <a href="/profile">Profile</a>
+                <a href="/settings">Settings</a>
+                <a href="/activity">Activity</a>
+                <a href="/logout" onclick="return confirm('Logout sekarang?')">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <h2 class="page-title">Members</h2>
+
+        <div class="card">
+            <!-- SEARCH + ADD -->
+            <div class="card-header">
+                <form method="GET" class="search-box">
+                    <input type="text" name="search" value="<%= search %>" placeholder="Cari member">
+                    <button type="submit">Cari</button>
+                </form>
+
+                <a href="/members/add" class="btn-add">Tambah Member</a>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Phone</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% members.forEach((m, i) => { %>
+                        <tr>
+                            <td><%= (page-1)*limit + i + 1 %></td>
+                            <td><%= m.name %></td>
+                            <td><%= m.phone %></td>
+                            <td>
+                                <a href="/members/edit/<%= m.id %>" class="btn btn-edit">Edit</a>
+                                <a href="/members/delete/<%= m.id %>"
+                                   class="btn btn-delete"
+                                   onclick="return confirm('Hapus data?')">Hapus</a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="pagination">
+                <% if(page > 1){ %>
+                    <a href="?page=<%= page-1 %>&search=<%= search %>">Prev</a>
+                <% } %>
+
+                <% for(let i=1;i<=totalPage;i++){ %>
+                    <a href="?page=<%= i %>&search=<%= search %>"
+                       class="<%= page==i?'active':'' %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+
+                <% if(page < totalPage){ %>
+                    <a href="?page=<%= page+1 %>&search=<%= search %>">Next</a>
+                <% } %>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
