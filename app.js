@@ -134,17 +134,24 @@ app.get("/members/edit/:id", auth, (req, res) => {
         [req.params.id],
         (err, result) => {
             if (err) throw err;
+
+            // 🔴 TAMBAHKAN INI
+            if (result.length === 0) {
+                return res.send("Data member tidak ditemukan");
+            }
+
             res.render("members/edit", { member: result[0] });
         }
     );
 });
 
 app.post("/members/edit/:id", auth, (req, res) => {
-    const { name, phone, address } = req.body;
+    console.log("ROUTE EDIT KEHIT");
+    const { name, phone, email } = req.body;
 
-    db.query(
-        "UPDATE members SET name=?, phone=?, address=? WHERE id=?",
-        [name, phone, address, req.params.id],
+db.query(
+    "UPDATE members SET name=?, phone=?, email=? WHERE id=?",
+    [name, phone, email, req.params.id],
         () => res.redirect("/members")
     );
 });
@@ -155,6 +162,109 @@ app.get("/members/delete/:id", auth, (req, res) => {
         "DELETE FROM members WHERE id=?",
         [req.params.id],
         () => res.redirect("/members")
+    );
+});
+
+// ================= UNITS =================
+app.get("/units", auth, (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
+    const sort = req.query.sort || "id";
+    const order = req.query.order || "DESC";
+    const offset = (page - 1) * limit;
+
+    const countSql = `
+        SELECT COUNT(*) AS total
+        FROM units
+        WHERE unit LIKE ? OR note LIKE ?
+    `;
+
+    db.query(countSql, [`%${search}%`, `%${search}%`], (err, countResult) => {
+        if (err) throw err;
+
+        const totalData = countResult[0].total;
+        const totalPage = Math.ceil(totalData / limit);
+
+        const dataSql = `
+            SELECT * FROM units
+            WHERE unit LIKE ? OR note LIKE ?
+            ORDER BY ${sort} ${order}
+            LIMIT ? OFFSET ?
+        `;
+
+        db.query(
+            dataSql,
+            [`%${search}%`, `%${search}%`, limit, offset],
+            (err, units) => {
+                if (err) throw err;
+
+                res.render("units/index", {
+                    units,
+                    page,
+                    totalPage,
+                    limit,
+                    search,
+                    sort,
+                    order
+                });
+            }
+        );
+    });
+});
+
+// ================= ADD UNITS =================
+app.get("/units/add", auth, (req, res) => {
+    res.render("units/add");
+});
+
+app.post("/units/add", auth, (req, res) => {
+    const { unit, note } = req.body;
+
+    if (!unit) {
+        return res.send("Unit wajib diisi");
+    }
+
+    db.query(
+        "INSERT INTO units (unit, note) VALUES (?,?)",
+        [unit, note],
+        () => res.redirect("/units")
+    );
+});
+
+// ================= EDIT UNITS =================
+app.get("/units/edit/:id", auth, (req, res) => {
+    db.query(
+        "SELECT * FROM units WHERE id=?",
+        [req.params.id],
+        (err, result) => {
+            if (err) throw err;
+
+            if (result.length === 0) {
+                return res.send("Data unit tidak ditemukan");
+            }
+
+            res.render("units/edit", { unit: result[0] });
+        }
+    );
+});
+
+app.post("/units/edit/:id", auth, (req, res) => {
+    const { unit, note } = req.body;
+
+    db.query(
+        "UPDATE units SET unit=?, note=? WHERE id=?",
+        [unit, note, req.params.id],
+        () => res.redirect("/units")
+    );
+});
+
+// ================= DELETE UNITS =================
+app.get("/units/delete/:id", auth, (req, res) => {
+    db.query(
+        "DELETE FROM units WHERE id=?",
+        [req.params.id],
+        () => res.redirect("/units")
     );
 });
 

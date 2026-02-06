@@ -1,319 +1,202 @@
-/* =====================================================
-   GLOBAL RESET & BASE
-===================================================== */
+/* RESET */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
 }
 
+/* BODY */
 body {
-    background: #f4f6f9;
-    color: #333;
-}
-
-a {
-    text-decoration: none;
-}
-
-/* =====================================================
-   LOGIN PAGE
-===================================================== */
-.login-body {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    background-color: #1e7e34;
 }
 
-.login-box {
-    background: #fff;
-    width: 340px;
-    padding: 40px 30px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    animation: fadeIn 0.8s ease;
-}
-
-.login-box h2 {
-    margin-bottom: 20px;
-    color: #2f5be7;
-}
-
-.login-box input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #cdd4e0;
-    border-radius: 6px;
-    font-size: 15px;
-}
-
-.login-box button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 15px;
-    background: #2f5be7;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.login-box button:hover {
-    background: #244acb;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* =====================================================
-   SIDEBAR
-===================================================== */
+/* SIDEBAR */
 .sidebar {
     width: 220px;
     height: 100vh;
-    position: fixed;
-    background: #2f5be7;
-    padding: 20px;
+    background: #007bff;
     color: white;
+    position: fixed;
+    padding-top: 20px;
 }
 
-.logo {
-    font-size: 20px;
+.sidebar .logo {
+    font-size: 22px;
     font-weight: bold;
+    text-align: center;
     margin-bottom: 30px;
 }
 
 .sidebar a {
     display: block;
-    padding: 10px 12px;
-    color: white;
-    border-radius: 6px;
-    margin-bottom: 6px;
+    color: #007bff;
+    padding: 12px 20px;
+    text-decoration: none;
     transition: 0.3s;
 }
 
-.sidebar a:hover,
-.sidebar a.active {
-    background: rgba(255,255,255,0.2);
+.sidebar a:hover {
+    background: #007bff;
+    color: white;
 }
 
-/* =====================================================
-   MAIN AREA
-===================================================== */
+.sidebar a.active {
+    background: #007bff;
+    color: white;
+}
+
+/* MAIN CONTENT */
 .main {
     margin-left: 220px;
-    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
 }
 
-/* =====================================================
-   TOPBAR
-===================================================== */
+/* TOPBAR */
 .topbar {
-    height: 60px;
-    background: white;
+    background: #0056b3;
+    padding: 16px 22px;
+    border-radius: 8px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* Profile */
+/* PROFILE DROPDOWN */
 .profile {
     position: relative;
     cursor: pointer;
 }
 
 .profile span {
-    font-weight: bold;
-    padding: 8px 12px;
-    border-radius: 6px;
+    font-weight: 500;
 }
 
-.profile:hover span {
-    background: #f1f3ff;
-}
-
-.dropdown {
+.profile .dropdown {
     display: none;
     position: absolute;
     right: 0;
-    top: 42px;
-    background: white;
-    border-radius: 8px;
-    min-width: 160px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-}
-
-.dropdown a {
-    display: block;
-    padding: 10px 15px;
-    color: #333;
-}
-
-.dropdown a:hover {
-    background: #f4f6f9;
+    background: #007bff;
+    border: 1px solid #ddd;
+    width: 150px;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 .profile:hover .dropdown {
     display: block;
 }
 
-/* =====================================================
-   CONTENT
-===================================================== */
-.content {
-    padding: 20px;
-}
-
-/* =====================================================
-   MEMBERS PAGE
-===================================================== */
-.page-title {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-/* Card */
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-/* Header (search + add) */
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    gap: 10px;
-}
-
-.search-box {
-    display: flex;
-    gap: 8px;
-}
-
-.search-box input {
+.profile .dropdown a {
+    display: block;
     padding: 10px;
-    border: 1px solid #cdd4e0;
-    border-radius: 6px;
-    width: 220px;
+    text-decoration: none;
+    color: #333;
 }
 
-.search-box button {
-    padding: 10px 14px;
-    background: #2f5be7;
+.profile .dropdown a:hover {
+    background: #f1f1f1;
+}
+
+/* TITLE */
+h2 {
+    margin-bottom: 15px;
+}
+
+/* SEARCH */
+form {
+    margin-bottom: 15px;
+}
+
+input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 8px 12px;
+    background: #007bff;
     color: white;
     border: none;
-    border-radius: 6px;
-    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-/* Buttons */
-.btn-add {
-    background: #2f5be7;
+button:hover {
+    background: #0056b3;
+}
+
+/* LINK TAMBAH */
+a[href*="add"] {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: #007bff;
     color: white;
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
 }
 
-.btn-add:hover {
-    background: #244acb;
+a[href*="add"]:hover {
+    background: #0056b3;
 }
 
-/* Table */
-.table-wrapper {
-    overflow-x: auto;
-}
-
+/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-thead {
-    background: #f4f6f9;
-}
-
-th, td {
-    padding: 12px;
+table th, table td {
+    padding: 10px;
     border-bottom: 1px solid #eee;
+    text-align: left;
 }
 
-tr:hover {
-    background: #fafbff;
+table th {
+    background: #f8f9fa;
 }
 
-/* Action buttons */
-.btn {
+table tr:hover {
+    background: #f1f1f1;
+}
+
+/* ACTION BUTTONS */
+td a {
     padding: 6px 10px;
     border-radius: 5px;
+    text-decoration: none;
     font-size: 13px;
-    font-weight: bold;
 }
 
-.btn-edit {
-    background: #ffb703;
-    color: #333;
+td a[href*="edit"] {
+    background: #007bff;
+    color: black;
 }
 
-.btn-delete {
-    background: #e63946;
+td a[href*="delete"] {
+    background: #0056b3;
     color: white;
 }
 
-.btn-edit:hover {
-    background: #e6a800;
+/* PAGINATION */
+div a {
+    margin: 3px;
+    padding: 6px 10px;
+    background: white;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    border-radius: 5px;
 }
 
-.btn-delete:hover {
-    background: #c62828;
-}
-
-/* Pagination */
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    gap: 6px;
-}
-
-.pagination a {
-    padding: 8px 14px;
-    border-radius: 6px;
-    background: #eaeef7;
-    color: #333;
-    font-weight: bold;
-}
-
-.pagination a:hover,
-.pagination a.active {
-    background: #2f5be7;
+div a:hover {
+    background: #007bff;
     color: white;
-}
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-@media (max-width: 768px) {
-    .card-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .search-box input {
-        width: 100%;
-    }
 }

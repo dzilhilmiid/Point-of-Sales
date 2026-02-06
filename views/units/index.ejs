@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Members</title>
+    <title>Units</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-rc4/dist/css/adminlte.min.css"/>
     
@@ -33,18 +33,43 @@
             </div>
         </div>
     </div>
+    
+    <h2>Units</h2>
+    
+    <form method="GET">
+        <input type="text" name="search" placeholder="Search..." value="<%= search %>">
+        <button type="submit">Search</button>
+    </form>
+    
+    <a href="/units/add">Tambah Unit</a>
+    
+    <table border="1">
+<tr>
+    <th>ID</th>
+    <th>unit</th>
+    <th>Note</th>
+    <th>Aksi</th>
+    <th>Created</th>
+    <th>Updated</th>
+</tr>
 
-    <div class="content">
-        <h2>Tambah Member</h2>
-        <form method="POST">
-        <input name="name" placeholder="Nama" required><br>
-        <input name="phone" placeholder="Phone"><br>
-        <textarea name="address" placeholder="Alamat"></textarea><br>
-        <button type="submit">Simpan</button>
-        </form>
-    </div>
+<% units.forEach(u => { %>
+<tr>
+    <td><%= u.id %></td>
+    <td><%= u.unit %></td>
+    <td><%= u.note %></td>
+    <td>
+        <a href="/units/edit/<%= u.id %>">Edit</a>
+        <a href="/units/delete/<%= u.id %>">Delete</a>
+    </td>
+    <td><%= u.created_at %></td>
+    <td><%= u.updated_at %></td>
+</tr>
+<% }) %>
+</table>
 
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-rc4/dist/js/adminlte.min.js"></script>
-</body>
-</html>
+<div>
+<% for(let i=1;i<=totalPage;i++){ %>
+    <a href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
+<% } %>
+</div>
