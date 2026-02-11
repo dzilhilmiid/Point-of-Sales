@@ -1,0 +1,65 @@
+<h2>Edit Goods</h2>
+
+<div class="form-card">
+  <form method="POST" action="/goods/edit/<%= goods.id %>" enctype="multipart/form-data">
+
+    <div class="form-group">
+      <label>Barcode</label>
+      <input type="text" name="barcode" value="<%= goods.barcode %>">
+    </div>
+
+    <div class="form-group">
+      <label>Nama Barang</label>
+      <input type="text" name="name" value="<%= goods.name %>" required>
+    </div>
+
+    <div class="form-group">
+      <label>Stock</label>
+      <input type="number" name="stock" value="<%= goods.stock %>">
+    </div>
+
+    <div class="form-group">
+      <label>Purchase Price</label>
+      <input type="number" name="purchase_price" value="<%= goods.purchase_price %>">
+    </div>
+
+    <div class="form-group">
+      <label>Selling Price</label>
+      <input type="number" name="selling_price" value="<%= goods.selling_price %>">
+    </div>
+
+    <div class="form-group">
+      <label>Unit</label>
+      <select name="unit_id">
+        <% units.forEach(u => { %>
+          <option value="<%= u.id %>" 
+            <%= goods.unit_id == u.id ? 'selected' : '' %>>
+            <%= u.nama_unit %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <!-- FOTO LAMA -->
+    <div class="form-group">
+      <label>Foto Saat Ini</label><br>
+      <% if (goods.photo) { %>
+        <img src="/uploads/<%= goods.photo %>" width="100">
+      <% } else { %>
+        <span>Tidak ada foto</span>
+      <% } %>
+    </div>
+
+    <!-- UPLOAD FOTO BARU -->
+    <div class="form-group">
+      <label>Ganti Foto</label>
+      <input type="file" name="photo" accept="image/*">
+    </div>
+
+    <div class="form-actions">
+      <a href="/goods" class="btn-cancel">Cancel</a>
+      <button type="submit" class="btn-primary">Update Goods</button>
+    </div>
+
+  </form>
+</div>

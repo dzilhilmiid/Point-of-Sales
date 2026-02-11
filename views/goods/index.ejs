@@ -1,0 +1,85 @@
+<h2>Goods</h2>
+
+<div class="table-header">
+  <form method="GET" action="/goods">
+    <input type="text" name="search" placeholder="Search goods..."
+      value="<%= typeof search !== 'undefined' ? search : '' %>">
+    <button type="submit">Search</button>
+  </form>
+
+  <a href="/goods/add" class="btn">Add Goods</a>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Barcode</th>
+      <th>Name</th>
+      <th>Stock</th>
+      <th>Purchase</th>
+      <th>Selling</th>
+      <th>Unit</th>
+      <th>Photo</th>
+      <th width="120">Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if (goods.length > 0) { %>
+      <% goods.forEach(g => { %>
+        <tr>
+          <td><%= g.barcode || '-' %></td>
+          <td><%= g.name %></td>
+          <td><%= g.stock %></td>
+          <td>Rp <%= Number(g.purchase_price).toLocaleString() %></td>
+          <td>Rp <%= Number(g.selling_price).toLocaleString() %></td>
+          <td><%= g.unit_name || '-' %></td>
+
+          <!-- PHOTO -->
+          <td>
+            <% if (g.photo) { %>
+              <img src="/uploads/<%= g.photo %>" 
+                   style="width:55px;height:55px;object-fit:cover;border-radius:6px;">
+            <% } else { %>
+              <span>-</span>
+            <% } %>
+          </td>
+
+          <!-- ACTION -->
+          <td class="action">
+            <a href="/goods/edit/<%= g.id %>" class="icon-btn edit">
+              <i data-lucide="pencil"></i>
+            </a>
+            <a href="/goods/delete/<%= g.id %>"
+               onclick="return confirm('Delete goods?')" 
+               class="icon-btn delete">
+              <i data-lucide="trash-2"></i>
+            </a>
+          </td>
+        </tr>
+      <% }) %>
+    <% } else { %>
+      <tr>
+        <td colspan="8" style="text-align:center">No data</td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<!-- PAGINATION -->
+<div class="pagination">
+  <% if(currentPage > 1){ %>
+    <a href="?page=<%= currentPage - 1 %>&search=<%= search %>">Prev</a>
+  <% } %>
+
+  <% for(let i = 1; i <= totalPages; i++){ %>
+    <a href="?page=<%= i %>&search=<%= search %>"
+       class="<%= currentPage == i ? 'active' : '' %>">
+       <%= i %>
+    </a>
+  <% } %>
+
+  <% if(currentPage < totalPages){ %>
+    <a href="?page=<%= currentPage + 1 %>&search=<%= search %>">Next</a>
+  <% } %>
+</div>

@@ -1,0 +1,97 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(to right, #4e73df, #224abe);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Card utama */
+.container {
+  width: 750px;
+  height: 420px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+}
+
+/* Panel kiri */
+.left {
+  width: 50%;
+  background: #1c1c1c;
+  color: gold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Panel kanan */
+.right {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.right h2 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.right p {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+/* Input */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #4e73df;
+  outline: none;
+}
+
+/* Tombol login */
+button {
+  padding: 12px;
+  background: #4e73df;
+  border: none;
+  color: white;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #2e59d9;
+}
+
+/* Footer kecil */
+.footer {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 12px;
+  color: #aaa;
+}

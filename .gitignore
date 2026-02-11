@@ -1,0 +1,8 @@
+n# dependencies
+node_modules/
+
+# environment variables (password database dll)
+.env
+
+# upload files (foto barang)
+public/uploads/

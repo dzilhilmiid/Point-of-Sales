@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>POS App</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>POS APP</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/members">Members</a>
+    <a href="/partials">Partials</a>
+    <a href="/units">Units</a>
+    <a href="/goods">Good Utilities</a>
+    <a href="/suppliers">Suppliers</a>
+    <a href="/customers">Customers</a>
+    <a href="/purchases">Purchases</a>
+    <a href="/sales">Sales</a>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+      <div class="topbar-left">
+        <h3>Wellcome</h3>
+      </div>
+
+      <div class="topbar-right">
+
+        <div class="search-box">
+          <input type="text" placeholder="Search...">
+        </div>
+
+        <!-- PROFILE MENU -->
+        <div class="profile-menu">
+
+          <div class="profile-trigger">
+            <% if(user){ %>
+              <span class="profile-name">👤 <%= user.name %></span>
+              <% } else { %>
+                <span class="profile-name">👤 Guest</span>
+                <% } %>
+                <img src="https://i.pravatar.cc/40" alt="profile">
+          </div>
+
+          <div class="dropdown">
+            <a href="/profile">Profile</a>
+            <a href="/setting">Settings</a>
+            <a href="/logout">Logout</a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <%- body %>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const trigger = document.querySelector(".profile-trigger");
+  const menu = document.querySelector(".profile-menu");
+
+  trigger.addEventListener("click", () => {
+    menu.classList.toggle("active");
+  });
+
+  window.addEventListener("click", function(e){
+    if(!menu.contains(e.target)){
+      menu.classList.remove("active");
+    }
+  });
+</script>
+<script>
+  lucide.createIcons();
+</script>
+</body>
+</html>

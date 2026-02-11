@@ -1,0 +1,74 @@
+<h2>Members</h2>
+
+<div class="table-header">
+  <form method="GET" action="/members">
+    <input 
+      type="text" 
+      name="search" 
+      placeholder="Search member..." 
+      value="<%= typeof search !== 'undefined' ? search : '' %>"
+    >
+    <button type="submit">Search</button>
+  </form>
+
+  <button><a href="/members/add" class="btn">Add Member</a></button>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nama</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th width="150">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <% if (typeof members !== 'undefined' && members.length > 0) { %>
+      <% members.forEach(member => { %>
+        <tr>
+          <td><%= member.nama %></td>
+          <td><%= member.email %></td>
+          <td><%= member.role %></td>
+          <td class="action">
+            <a href="/members/edit/<%= member.id %>" class="icon-btn edit">
+              <i data-lucide="pencil"></i>
+            </a>
+            
+            <a href="/members/delete/<%= member.id %>" 
+               class="icon-btn delete"
+               onclick="return confirm('Delete member?')">
+              <i data-lucide="trash-2"></i>
+            </a>
+          </td>
+        </tr>
+      <% }) %>
+    <% } else { %>
+        <tr>
+          <td colspan="5" style="text-align:center;">Data member belum ada</td>
+        </tr>
+    <% } %>
+
+  </tbody>
+</table>
+
+<!-- PAGINATION -->
+<div class="pagination">
+  <% if(typeof currentPage !== 'undefined' && currentPage > 1){ %>
+    <a href="?page=<%= currentPage - 1 %>&search=<%= search %>">Prev</a>
+  <% } %>
+
+  <% if(typeof totalPages !== 'undefined'){ %>
+    <% for(let i = 1; i <= totalPages; i++){ %>
+      <a href="?page=<%= i %>&search=<%= search %>"
+         class="<%= currentPage == i ? 'active' : '' %>">
+         <%= i %>
+      </a>
+    <% } %>
+  <% } %>
+
+  <% if(typeof currentPage !== 'undefined' && currentPage < totalPages){ %>
+    <a href="?page=<%= currentPage + 1 %>&search=<%= search %>">Next</a>
+  <% } %>
+</div>
