@@ -1,0 +1,53 @@
+<h2>Suppliers</h2>
+
+<div class="table-header">
+    <form method="GET" action="/suppliers">
+        <input type="text" name="search" placeholder="Search suppliers..."
+        value="<%= typeof search !== 'undefined' ? search : '' %>">
+        <button type="submit">Search</button>
+    </form>
+    <a href="/suppliers/add" class="btn">Add Supplier</a>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Phone</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% suppliers.forEach(s => { %>
+      <tr>
+        <td><%= s.supplier_id %></td>
+        <td><%= s.name %></td>
+        <td><%= s.address %></td>
+        <td><%= s.phone %></td>
+        <td>
+          <a href="/suppliers/edit/<%= s.supplier_id %>" class="btn btn-warning btn-sm">Edit</a>
+
+          <form action="/suppliers/<%= s.supplier_id %>?_method=DELETE" method="POST" style="display:inline">
+            <button onclick="return confirm('Hapus supplier ini?')" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<!-- Pagination -->
+<nav>
+  <ul class="pagination">
+    <% for(let i=1;i<=totalPages;i++){ %>
+      <li class="page-item <%= i===page?'active':'' %>">
+        <a class="page-link" href="/suppliers?page=<%= i %>&search=<%= search %>"><%= i %></a>
+      </li>
+    <% } %>
+  </ul>
+</nav>
+
+</body>
+</html>

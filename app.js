@@ -89,6 +89,10 @@ app.use('/units', unitsRouter);
 const goodsRoutes = require("./routes/goods");
 app.use("/goods", goodsRoutes);
 
+// ================= SUPPLIERS CRUD =================
+const suppliersRoutes = require("./routes/suppliers");
+app.use("/suppliers", suppliersRoutes);
+
 // ================= LOGOUT =================
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
