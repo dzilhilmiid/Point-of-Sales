@@ -6,7 +6,7 @@
         value="<%= typeof search !== 'undefined' ? search : '' %>">
         <button type="submit">Search</button>
     </form>
-    <a href="/suppliers/add" class="btn">Add Supplier</a>
+    <button><a href="/suppliers/add" class="btn">Add Supplier</a></button>
 </div>
 
 <table class="table">
@@ -26,12 +26,16 @@
         <td><%= s.name %></td>
         <td><%= s.address %></td>
         <td><%= s.phone %></td>
-        <td>
-          <a href="/suppliers/edit/<%= s.supplier_id %>" class="btn btn-warning btn-sm">Edit</a>
+        <td class="action">
+          <a href="/suppliers/edit/<%= s.supplier_id %>" class="icon-btn edit">
+            <i data-lucide="pencil"></i>
+          </a>
 
-          <form action="/suppliers/<%= s.supplier_id %>?_method=DELETE" method="POST" style="display:inline">
-            <button onclick="return confirm('Hapus supplier ini?')" class="btn btn-danger btn-sm">Delete</button>
-          </form>
+          <a href="/suppliers/<%= s.supplier_id %>?_method=DELETE" method="POST"
+            onclick="return confirm('Hapus supplier ini?')" 
+            class="icon-btn delete">
+              <i data-lucide="trash-2"></i>
+          </a>
         </td>
       </tr>
     <% }) %>

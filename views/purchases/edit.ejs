@@ -1,0 +1,113 @@
+<h2>Edit Purchase</h2>
+
+<div class="form-card">
+<form action="/purchases/update/<%= purchase.id %>" method="POST">
+
+    <!-- Supplier -->
+    <div class="form-group">
+        <label>Supplier</label>
+        <select name="supplier_id" class="form-control mb-2" required>
+            <% suppliers.forEach(s => { %>
+                <option value="<%= s.supplier_id %>"
+                    <%= s.supplier_id == purchase.supplier_id ? 'selected' : '' %>>
+                    <%= s.name %>
+                </option>
+            <% }) %>
+        </select>
+    </div>
+
+    <!-- Date -->
+    <div class="form-group">
+        <label>Tanggal</label>
+        <input type="date" name="date"
+            value="<%= purchase.date ? purchase.date.toISOString().split('T')[0] : '' %>"
+            class="form-control mb-2" required>
+    </div>
+
+    <!-- ITEMS -->
+    <div class="items-section">
+        <div class="items-header">
+            <h4>Items</h4>
+            <button type="button" id="addItemBtn" class="btn-primary">Tambah Item</button>
+        </div>
+
+        <table class="table" id="itemsTable">
+            <thead>
+                <tr>
+                    <th>Barang</th>
+                    <th>Qty</th>
+                    <th>Harga</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            <% items.forEach((item, index) => { %>
+                <tr>
+                    <td>
+                        <select name="items[<%= index %>][goods_id]" class="form-control">
+                            <% goods.forEach(g => { %>
+                                <option value="<%= g.goods_id %>"
+                                    <%= g.goods_id == item.goods_id ? 'selected' : '' %>>
+                                    <%= g.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </td>
+
+                    <td>
+                        <input type="number"
+                               name="items[<%= index %>][qty]"
+                               value="<%= item.qty %>"
+                               class="form-control"
+                               required>
+                    </td>
+
+                    <td>
+                        <input type="number"
+                               name="items[<%= index %>][price]"
+                               value="<%= item.price %>"
+                               class="form-control"
+                               required>
+                    </td>
+
+                    <td>
+                        <button type="button" class="btn-delete">Hapus</button>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- TOTAL -->
+    <div class="form-group">
+        <label>Total</label>
+        <input type="number"
+               name="total"
+               value="<%= purchase.total %>"
+               class="form-control mb-2"
+               required>
+    </div>
+
+    <!-- ACTION -->
+    <div class="form-actions">
+        <button class="btn-primary">Update Purchase</button>
+        <a href="/purchases" class="btn-cancel">Back</a>
+    </div>
+
+</form>
+</div>
+
+
+<!-- GOODS OPTION TEMPLATE (dipakai JS global) -->
+<script>
+const goodsOptions = `
+    <% goods.forEach(g => { %>
+        <option value="<%= g.goods_id %>"><%= g.name %></option>
+    <% }) %>
+`;
+</script>
+
+<!-- GLOBAL SCRIPT -->
+<script src="/js/purchase-form.js"></script>

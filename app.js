@@ -93,6 +93,10 @@ app.use("/goods", goodsRoutes);
 const suppliersRoutes = require("./routes/suppliers");
 app.use("/suppliers", suppliersRoutes);
 
+// ================= PURCHASES CRUD =================
+const purchasesRoutes = require("./routes/purchases");
+app.use("/purchases", purchasesRoutes);
+
 // ================= LOGOUT =================
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
