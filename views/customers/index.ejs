@@ -1,0 +1,76 @@
+<h2>Customers</h2>
+
+<div class="table-header">
+  <form method="GET" action="/customers">
+    <input type="text" name="search" placeholder="Search customers..."
+      value="<%= typeof search !== 'undefined' ? search : '' %>">
+    <button type="submit">Search</button>
+  </form>
+
+  <button>
+    <a href="/customers/add" class="btn">Add Customer</a>
+  </button>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Phone</th>
+      <th width="120">Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if (data.length > 0) { %>
+      <% data.forEach(c => { %>
+        <tr>
+          <td><%= c.name %></td>
+          <td><%= c.address || '-' %></td>
+          <td><%= c.phone || '-' %></td>
+
+          <!-- ACTION -->
+          <td class="action">
+            <a href="/customers/edit/<%= c.id %>" class="icon-btn edit">
+                <i data-lucide="pencil"></i>
+            </a>
+
+            <a href="/customers/delete/<%= c.id %>"
+               onclick="return confirm('Delete customer?')"
+               class="icon-btn delete">
+               <i data-lucide="trash-2"></i>
+            </a>
+          </td>
+        </tr>
+      <% }) %>
+    <% } else { %>
+      <tr>
+        <td colspan="4" style="text-align:center">No data</td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+
+<!-- PAGINATION -->
+<div class="pagination">
+  <% if(currentPage > 1){ %>
+    <a href="?page=<%= currentPage - 1 %>&search=<%= search %>&sort=<%= sort %>">
+      Prev
+    </a>
+  <% } %>
+
+  <% for(let i = 1; i <= totalPages; i++){ %>
+    <a href="?page=<%= i %>&search=<%= search %>&sort=<%= sort %>"
+       class="<%= currentPage == i ? 'active' : '' %>">
+       <%= i %>
+    </a>
+  <% } %>
+
+  <% if(currentPage < totalPages){ %>
+    <a href="?page=<%= currentPage + 1 %>&search=<%= search %>&sort=<%= sort %>">
+      Next
+    </a>
+  <% } %>
+</div>
