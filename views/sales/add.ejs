@@ -1,0 +1,31 @@
+<h2>Tambah Sales</h2>
+<div class="form-card">
+    <form action="/sales/add" method="POST">    
+        <div class="form-group">
+            <label>Invoice</label>
+            <input type="text" name="invoice_number" required>
+        </div>    
+        
+        <div class="form-group">
+            <label>Product</label>
+            <select name="product_id">
+            <% goods.forEach(g => { %>
+                <option value="<%= g.id %>">
+                    <%= g.name %> - <%= g.price %>
+                </option>
+                <% }) %>
+        </select>
+        </div>
+        
+        <div class="form-group">
+             <label>Qty</label>
+             <input type="number" name="quantity" required>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary">Save</button>
+            <a href="/sales" class="btn-cancel">Back</a>
+        </div>
+        
+    </form>
+</div>

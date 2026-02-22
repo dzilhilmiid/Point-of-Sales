@@ -1,0 +1,40 @@
+<h2>Edit Sale</h2>
+
+<div class="form-card">
+  <form action="/sales/edit/<%= sale.id %>" method="POST">
+
+    <div class="form-group">
+      <label>Invoice</label>
+      <input type="text"
+             name="invoice_number"
+             value="<%= sale.invoice_number %>"
+             required>
+    </div>
+
+    <div class="form-group">
+      <label>Product</label>
+      <select name="product_id" required>
+        <% goods.forEach(g => { %>
+          <option value="<%= g.id %>"
+            <%= g.id === sale.product_id ? 'selected' : '' %>>
+            <%= g.name %> - <%= g.selling_price %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Quantity</label>
+      <input type="number"
+             name="quantity"
+             value="<%= sale.quantity %>"
+             required>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Update</button>
+      <a href="/sales" class="btn-cancel">Cancel</a>
+    </div>
+
+  </form>
+</div>

@@ -20,9 +20,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-/* ====================== GLOBAL USER KE EJS ======================
-   supaya layout.ejs bisa akses user login
-*/
+/* ====================== GLOBAL USER KE EJS ====================== */
 app.use((req, res, next) => {
   res.locals.user = req.session.user;
   next();
@@ -100,6 +98,10 @@ app.use("/purchases", purchasesRoutes);
 // ================= CUSTOMERS CRUD =================
 const customersRoutes = require("./routes/customers");
 app.use("/customers", customersRoutes);
+
+// ================= SALES CRUD =================
+const salesRoutes = require("./routes/sales");
+app.use("/sales", salesRoutes);
 
 // ================= LOGOUT =================
 app.get("/logout", (req, res) => {

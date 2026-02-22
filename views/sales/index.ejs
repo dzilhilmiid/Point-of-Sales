@@ -1,0 +1,57 @@
+<h2>Sales</h2>
+
+<div class="table-header">
+  <form method="GET" action="/sales">
+    <input type="text" name="search" placeholder="Search invoice..."
+      value="<%= search %>">
+    <button type="submit">Search</button>
+  </form>
+
+  <button>
+    <a href="/sales/add" class="btn">Add Sale</a>
+  </button>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Invoice</th>
+      <th>Total</th>
+      <th>Date</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% sales.forEach(s => { %>
+      <tr>
+        <td><%= s.id %></td>
+        <td><%= s.invoice_number %></td>
+        <td><%= s.total %></td>
+        <td><%= s.created_at.toISOString().slice(0,10) %></td>
+        <td class="action">
+          <a href="/sales/edit/<%= s.id %>" class="icon-btn edit">
+            <i data-lucide="pencil"></i>
+          </a>
+          <a href="/sales/delete/<%= s.id %>"
+             onclick="return confirm('Hapus sale ini?')"
+             class="icon-btn delete">
+            <i data-lucide="trash-2"></i>
+          </a>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<!-- PAGINATION -->
+<nav>
+  <ul class="pagination">
+    <% for(let i=1;i<=totalPages;i++){ %>
+      <li class="<%= i===page?'active':'' %>">
+        <a href="/sales?page=<%= i %>&search=<%= search %>"><%= i %></a>
+      </li>
+    <% } %>
+  </ul>
+</nav>
