@@ -60,36 +60,82 @@ router.get('/add', async (req, res) => {
 
 
 // ========================== SAVE SALE ============================
-router.post('/add', async (req, res) => {
+router.post("/add", async (req, res) => {
   const { invoice_number, product_id, quantity } = req.body;
 
-  try {
+  const client = await db.connect();
 
-    // AMBIL HARGA PRODUK
-    const priceResult = await db.query(
-      'SELECT selling_price FROM goods WHERE id = $1',
+  try {
+    await client.query("BEGIN");
+
+    // Ambil produk (AMBIL HARGA YANG BENAR)
+    const productResult = await client.query(
+      `SELECT id, selling_price, stock 
+       FROM goods 
+       WHERE id = $1`,
       [product_id]
     );
 
-    if (priceResult.rows.length === 0) {
-      return res.send("Product not found");
+    if (productResult.rows.length === 0) {
+      throw new Error("Produk tidak ditemukan");
     }
 
-    const price = parseFloat(priceResult.rows[0].price);
-    const total = price * parseInt(quantity);
+    const product = productResult.rows[0];
 
-    // INSERT SALES
-    await db.query(
-      `INSERT INTO sales (invoice_number, total)
-       VALUES ($1, $2)`,
-      [invoice_number, total]
+    // Convert ke number (ANTI NaN)
+    const price = parseInt(product.selling_price);
+    const qty = parseInt(quantity);
+
+    if (isNaN(price) || isNaN(qty)) {
+      throw new Error("Price atau Qty tidak valid");
+    }
+
+    if (qty <= 0) {
+      throw new Error("Qty harus lebih dari 0");
+    }
+
+    if (product.stock < qty) {
+      throw new Error("Stock tidak cukup");
+    }
+
+    const subtotal = price * qty;
+
+    // Insert ke sales
+    const salesInsert = await client.query(
+      `INSERT INTO sales (invoice_number, total, created_at)
+       VALUES ($1, $2, NOW())
+       RETURNING id`,
+      [invoice_number, subtotal]
     );
 
-    res.redirect('/sales');
+    const saleId = salesInsert.rows[0].id;
+
+    // Insert ke sales_detail
+    await client.query(
+      `INSERT INTO sales_detail 
+       (sale_id, goods_id, price, qty, subtotal)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [saleId, product_id, price, qty, subtotal]
+    );
+
+    // Update stock
+    await client.query(
+      `UPDATE goods 
+       SET stock = stock - $1 
+       WHERE id = $2`,
+      [qty, product_id]
+    );
+
+    await client.query("COMMIT");
+
+    res.redirect("/sales");
 
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error(err);
-    res.send("Database Error");
+    res.send("Transaksi gagal: " + err.message);
+  } finally {
+    client.release();
   }
 });
 
