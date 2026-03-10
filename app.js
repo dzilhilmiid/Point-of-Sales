@@ -239,6 +239,7 @@ app.use("/suppliers", checkAuth, require("./routes/suppliers"));
 app.use("/purchases", checkAuth, require("./routes/purchases"));
 app.use("/customers", checkAuth, require("./routes/customers"));
 app.use("/sales", checkAuth, require("./routes/sales"));
+app.use("/profile", checkAuth, require("./routes/profile"));
 
 /* ====================== LOGOUT ====================== */
 

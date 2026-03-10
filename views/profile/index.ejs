@@ -1,0 +1,23 @@
+<h2>Profile</h2>
+
+<div class="form-card">
+    <div class="form-group">
+    <label>Nama</label>
+    <%= user.name %>
+    </div>
+
+    <div class="form-group">
+    <label>Email</label>
+    <%= user.email %>
+    </div>
+
+    <div class="form-actions">
+        <a href="/profile/edit" class="btn-primary">
+            Edit Profile
+        </a>
+
+        <a href="/profile/password" class="btn-cancel">
+            Change Password
+        </a>
+    </div>
+</div>
