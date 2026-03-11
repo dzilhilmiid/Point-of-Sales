@@ -7,7 +7,6 @@ const expressLayouts = require("express-ejs-layouts");
 const app = express();
 
 /* ====================== BASIC SETUP ====================== */
-
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));
@@ -15,7 +14,6 @@ app.use(express.json());
 app.use(express.static("public"));
 
 /* ====================== SESSION ====================== */
-
 app.use(session({
   secret: "secretpos",
   resave: false,
@@ -27,19 +25,16 @@ app.use(session({
 }));
 
 /* ====================== GLOBAL USER ====================== */
-
 app.use((req, res, next) => {
   res.locals.user = req.session.user;
   next();
 });
 
 /* ====================== LAYOUT ====================== */
-
 app.use(expressLayouts);
 app.set("layout", "layout");
 
 /* ====================== AUTH ====================== */
-
 function checkAuth(req, res, next) {
   if (!req.session.user) {
     return res.redirect("/");
@@ -47,8 +42,18 @@ function checkAuth(req, res, next) {
   next();
 }
 
-/* ====================== LOGIN ====================== */
+function checkAdmin(req, res, next) {
 
+  const adminRoles = ["owner", "manager", "admin"];
+
+  if (!req.session.user || !adminRoles.includes(req.session.user.role)) {
+    return res.status(403).send("Access denied");
+  }
+
+  next();
+}
+
+/* ====================== LOGIN ====================== */
 app.get("/", (req, res) => {
   res.render("login", { layout: false });
 });
@@ -76,6 +81,8 @@ app.post("/login", async (req, res) => {
       return res.send("Password salah");
     }
 
+    const operatorRoles = ["staff", "kasir"];
+
     req.session.user = {
       id: user.id,
       name: user.name,
@@ -83,17 +90,19 @@ app.post("/login", async (req, res) => {
       role: user.role
     };
 
+    if (operatorRoles.includes(user.role)) {
+      return res.redirect("/sales");
+    }
+
     res.redirect("/dashboard");
 
   } catch (err) {
     console.error(err);
     res.send("Terjadi kesalahan server");
   }
-
 });
 
 /* ====================== DASHBOARD ====================== */
-
 app.get("/dashboard", checkAuth, async (req, res) => {
 
   try {
@@ -192,7 +201,6 @@ app.get("/dashboard", checkAuth, async (req, res) => {
 });
 
 /* ====================== EXPORT CSV ====================== */
-
 app.get("/dashboard/export", checkAuth, async (req, res) => {
 
   try {
@@ -231,18 +239,21 @@ app.get("/dashboard/export", checkAuth, async (req, res) => {
 });
 
 /* ====================== ROUTES ====================== */
+// ADMIN ONLY
+app.use("/members", checkAuth, checkAdmin, require("./routes/members"));
+app.use("/units", checkAuth, checkAdmin, require("./routes/units"));
+app.use("/goods", checkAuth, checkAdmin, require("./routes/goods"));
 
-app.use("/members", checkAuth, require("./routes/members"));
-app.use("/units", checkAuth, require("./routes/units"));
-app.use("/goods", checkAuth, require("./routes/goods"));
+// OPERATOR + ADMIN
 app.use("/suppliers", checkAuth, require("./routes/suppliers"));
 app.use("/purchases", checkAuth, require("./routes/purchases"));
 app.use("/customers", checkAuth, require("./routes/customers"));
 app.use("/sales", checkAuth, require("./routes/sales"));
+
+// SEMUA USER
 app.use("/profile", checkAuth, require("./routes/profile"));
 
 /* ====================== LOGOUT ====================== */
-
 app.get("/logout", (req, res) => {
 
   req.session.destroy(() => {
@@ -252,7 +263,6 @@ app.get("/logout", (req, res) => {
 });
 
 /* ====================== ERROR HANDLER ====================== */
-
 app.use((err, req, res, next) => {
 
   console.error(err.stack);
@@ -261,9 +271,6 @@ app.use((err, req, res, next) => {
 });
 
 /* ====================== SERVER ====================== */
-
 app.listen(3000, () => {
-
   console.log("Server jalan di http://localhost:3000");
-
 });
