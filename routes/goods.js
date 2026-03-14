@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
   try {
     const search = req.query.search || "";
     const page = parseInt(req.query.page) || 1;
-    const limit = 7;
+    const limit = parseInt(req.query.limit) || 5;
     const offset = (page - 1) * limit;
 
     const result = await db.query(
@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
       [`%${search}%`]
     );
 
-    const totalPages = Math.ceil(count.rows[0].count / limit);
+    const totalPages = Math.ceil(parseInt(count.rows[0].count) / limit);
 
     res.render("goods/index", {
       goods: result.rows,
@@ -80,14 +80,14 @@ router.post("/add", upload.single("photo"), async (req, res) => {
     const unit_id = req.body.unit_id ? parseInt(req.body.unit_id) : null;
     const category = req.body.category || null;
     const photo = req.file ? req.file.filename : null;
-
+    const min_stock = req.body.min_stock ? parseInt(req.body.min_stock) : 5;
     if (!name) return res.send("Nama barang wajib diisi");
 
     await db.query(
       `INSERT INTO goods 
-      (barcode, name, stock, purchase_price, selling_price, unit_id, category, photo)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
-      [barcode, name, stock, purchase_price, selling_price, unit_id, category, photo]
+      (barcode, name, stock, min_stock, purchase_price, selling_price, unit_id, category, photo)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+      [barcode, name, stock, min_stock, purchase_price, selling_price, unit_id, category, photo]
     );
 
     res.redirect("/goods");
@@ -134,8 +134,8 @@ router.post("/edit/:id", upload.single("photo"), async (req, res) => {
     const purchase_price = req.body.purchase_price ? parseInt(req.body.purchase_price) : 0;
     const selling_price = req.body.selling_price ? parseInt(req.body.selling_price) : 0;
     const unit_id = req.body.unit_id ? parseInt(req.body.unit_id) : null;
-
     const photo = req.file ? req.file.filename : null;
+    const min_stock = req.body.min_stock ? parseInt(req.body.min_stock) : 5;
 
     if (photo) {
       await db.query(
@@ -143,11 +143,12 @@ router.post("/edit/:id", upload.single("photo"), async (req, res) => {
           barcode=$1,
           name=$2,
           stock=$3,
-          purchase_price=$4,
-          selling_price=$5,
-          unit_id=$6,
-          photo=$7
-        WHERE id=$8`,
+          min_stock=$4,
+          purchase_price=$5,
+          selling_price=$6,
+          unit_id=$7,
+          photo=$8
+        WHERE id=$9`,
         [barcode, name, stock, purchase_price, selling_price, unit_id, photo, id]
       );
     } else {
@@ -187,6 +188,41 @@ router.get("/delete/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.send("Error delete data");
+  }
+});
+
+/* ===================== STOCK ALERT ===================== */
+router.get("/alerts", async (req, res) => {
+  try {
+
+    const result = await db.query(`
+      SELECT id, barcode, name, stock
+      FROM goods
+      WHERE stock <= min_stock
+      ORDER BY stock ASC
+    `);
+
+    res.json(result.rows);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error load alerts");
+  }
+});
+
+router.get("/alerts/count", async (req, res) => {
+  try {
+
+    const result = await db.query(`
+      SELECT COUNT(*) FROM goods
+      WHERE stock <= min_stock
+    `);
+
+    res.json({ total: result.rows[0].count });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error");
   }
 });
 

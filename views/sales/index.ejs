@@ -31,12 +31,14 @@
         <td><%= s.total %></td>
         <td><%= s.created_at.toISOString().slice(0,10) %></td>
         <td class="action">
+         <!-- EDIT --> 
           <a href="/sales/edit/<%= s.id %>" class="icon-btn edit">
-            <i data-lucide="pencil"></i>
-          </a>
-          <a href="/sales/delete/<%= s.id %>"
-             onclick="return confirm('Hapus sale ini?')"
-             class="icon-btn delete">
+             <i data-lucide="pencil"></i> 
+          </a> 
+          <!-- DELETE --> 
+          <a href="/sales/delete/<%= s.id %>" 
+            class="icon-btn delete"
+            onclick="return confirm('Hapus sale ini?')">
             <i data-lucide="trash-2"></i>
           </a>
         </td>

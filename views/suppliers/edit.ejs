@@ -1,7 +1,7 @@
 <h2>Edit Supplier</h2>
 
 <div class="form-card">
-    <form action="/suppliers/<%= supplier.supplier_id %>?_method=PUT" method="POST">
+    <form action="/suppliers/update/<%= supplier.supplier_id %>" method="POST">
         <div class="form-group">
             <label>Nama Supplier</label>
             <input type="text" name="name" value="<%= supplier.name %>" class="form-control mb-2">
@@ -18,6 +18,6 @@
             <button class="btn-primary">Update</button>
             <a href="/suppliers" class="btn-cancel">Back</a>
         </div>
-</form>
+    </form>
 
 </div>

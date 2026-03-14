@@ -3,95 +3,180 @@
 <div class="form-card p-3 border rounded shadow-sm">
 <form action="/purchases/add" method="POST">
 
-    <!-- Supplier -->
-    <div class="form-group mb-3">
-        <label>Supplier</label>
-        <select name="supplier_id" class="form-control" required>
-            <option value="">-- Select Supplier --</option>
-            <% (suppliers || []).forEach(s => { %>
-                <option value="<%= s.supplier_id %>"><%= s.name %></option>
-            <% }) %>
-        </select>
-    </div>
+<!-- Supplier -->
+<div class="form-group mb-3">
+<label>Supplier</label>
+<select name="supplier_id" class="form-control" required>
+<option value="">-- Select Supplier --</option>
 
-    <!-- Tanggal -->
-    <div class="form-group mb-3">
-        <label>Tanggal</label>
-        <input type="date" name="date"
-               class="form-control"
-               value="<%= new Date().toISOString().slice(0,10) %>">
-    </div>
+<% (suppliers || []).forEach(s => { %>
+<option value="<%= s.supplier_id %>">
+<%= s.name %>
+</option>
+<% }) %>
 
-    <!-- Items Table -->
-    <h4>Items</h4>
-    <table class="table table-bordered align-middle text-center">
-        <thead class="table-light">
-            <tr>
-                <th style="width:40%">Barang</th>
-                <th style="width:15%">Qty</th>
-                <th style="width:15%">Harga</th>
-                <th style="width:20%">Subtotal</th>
-                <th style="width:10%">Action</th>
-            </tr>
-        </thead>
-        <tbody id="itemsTableBody">
-            <!-- Baris akan ditambahkan JS -->
-        </tbody>
-    </table>
+</select>
+</div>
 
-    <button type="button" class="btn-primary" onclick="addRow()">Add Item</button>
+<!-- Date -->
+<div class="form-group mb-3">
+<label>Tanggal</label>
+<input 
+type="date"
+name="date"
+class="form-control"
+value="<%= new Date().toISOString().slice(0,10) %>">
+</div>
 
-    <!-- Total -->
-    <div class="form-group mb-3">
-        <label>Total</label>
-        <input type="number" name="total" id="totalInput" class="form-control" value="0" readonly>
-    </div>
 
-    <!-- Buttons -->
-    <div class="form-actions d-flex gap-2">
-        <button type="submit" class="btn-primary">Save</button>
-        <a href="/purchases" class="btn-cancel">Back</a>
-    </div>
+<h4>Items</h4>
+
+<table class="table table-bordered text-center">
+
+<thead class="table-light">
+<tr>
+<th style="width:35%">Barang</th>
+<th style="width:15%">Qty</th>
+<th style="width:15%">Harga</th>
+<th style="width:20%">Subtotal</th>
+<th style="width:15%">Action</th>
+</tr>
+</thead>
+
+<tbody id="itemsTableBody"></tbody>
+
+</table>
+
+<button type="button" class="btn btn-primary mb-3" onclick="addRow()">
+Add Item
+</button>
+
+<div class="form-group mb-3">
+<label>Total</label>
+<input
+type="number"
+name="total"
+id="totalInput"
+class="form-control"
+value="0">
+</div>
+
+<div class="d-flex gap-2">
+<button type="submit" class="btn btn-success">Save</button>
+<a href="/purchases" class="btn btn-secondary">Back</a>
+</div>
 
 </form>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    const goodsData = <%- JSON.stringify(Array.isArray(goods) ? goods : []) %>;
-    let index = 0;
+const goodsData = <%- JSON.stringify(Array.isArray(goods) ? goods : []) %>;
 
-    window.addItem = function () {
+let index = 0;
 
-        let html = `
-        <tr>
-            <td>
-                <select name="items[${index}][goods_id]" class="form-control">
-                    ${goodsData.map(g => `
-                        <option value="${g.goods_id}">${g.name}</option>
-                    `).join("")}
-                </select>
-            </td>
 
-            <td>
-                <input type="number" name="items[${index}][qty]" class="form-control qty" value="1">
-            </td>
+// ================= ADD ROW =================
 
-            <td>
-                <input type="number" name="items[${index}][price]" class="form-control price" value="0">
-            </td>
+function addRow(){
 
-            <td>
-                <button type="button" onclick="removeRow(this)">Hapus</button>
-            </td>
-        </tr>
-        `;
+let html = `
+<tr>
 
-        document.getElementById("itemsBody").insertAdjacentHTML("beforeend", html);
-        index++;
-        calculateTotal();
-    }
+<td>
+<select name="items[${index}][goods_id]" class="form-control">
+
+${goodsData.map(g => `
+<option value="${g.goods_id}">
+${g.name}
+</option>
+`).join("")}
+
+</select>
+</td>
+
+<td>
+<input
+type="number"
+name="items[${index}][qty]"
+class="form-control qty"
+value="1"
+min="1"
+oninput="calculateTotal()">
+</td>
+
+<td>
+<input
+type="number"
+name="items[${index}][price]"
+class="form-control price"
+value="0"
+min="0"
+oninput="calculateTotal()">
+</td>
+
+<td class="subtotal">0</td>
+
+<td>
+<button
+type="button"
+class="btn btn-danger btn-sm"
+onclick="removeRow(this)">
+Delete
+</button>
+</td>
+
+</tr>
+`;
+
+document
+.getElementById("itemsTableBody")
+.insertAdjacentHTML("beforeend", html);
+
+index++;
+
+calculateTotal();
+}
+
+
+// ================= REMOVE ROW =================
+
+function removeRow(btn){
+
+btn.closest("tr").remove();
+
+calculateTotal();
+
+}
+
+
+// ================= CALCULATE =================
+
+function calculateTotal(){
+
+let total = 0;
+
+document
+.querySelectorAll("#itemsTableBody tr")
+.forEach(row => {
+
+let qty = parseFloat(row.querySelector(".qty").value) || 0;
+let price = parseFloat(row.querySelector(".price").value) || 0;
+
+let subtotal = qty * price;
+
+row.querySelector(".subtotal").innerText = subtotal;
+
+// total hanya qty
+total += qty;
 
 });
+
+document.getElementById("totalInput").value = total;
+
+}
+
+// default 1 row
+addRow();
+
 </script>

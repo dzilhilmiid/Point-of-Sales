@@ -35,16 +35,33 @@
       </div>
 
       <div class="topbar-right">
+
+        <!-- ALERT NOTIFICATION -->
+        <div class="alert-menu">
+
+          <div class="alert-trigger" onclick="toggleAlert()">
+            🔔 <span id="alert-count" class="badge">0</span>
+          </div>
+
+          <div class="alert-dropdown" id="alert-dropdown">
+            <h4>Alerts Center</h4>
+            <div id="alert-list">
+              <p>No alerts</p>
+            </div>
+          </div>
+
+        </div>
+
         <!-- PROFILE MENU -->
         <div class="profile-menu">
 
           <div class="profile-trigger">
             <% if(user){ %>
               <span class="profile-name">👤 <%= user.name %></span>
-              <% } else { %>
-                <span class="profile-name">👤 Guest</span>
-                <% } %>
-                <img src="https://i.pravatar.cc/40" alt="profile">
+            <% } else { %>
+              <span class="profile-name">👤 Guest</span>
+            <% } %>
+            <img src="https://i.pravatar.cc/40" alt="profile">
           </div>
 
           <div class="dropdown">
@@ -68,21 +85,73 @@
 </div>
 
 <script>
-  const trigger = document.querySelector(".profile-trigger");
-  const menu = document.querySelector(".profile-menu");
 
-  trigger.addEventListener("click", () => {
-    menu.classList.toggle("active");
-  });
+/* PROFILE MENU */
+const trigger = document.querySelector(".profile-trigger");
+const menu = document.querySelector(".profile-menu");
 
-  window.addEventListener("click", function(e){
-    if(!menu.contains(e.target)){
-      menu.classList.remove("active");
+trigger.addEventListener("click", () => {
+  menu.classList.toggle("active");
+});
+
+window.addEventListener("click", function(e){
+  if(!menu.contains(e.target)){
+    menu.classList.remove("active");
+  }
+});
+
+/* ALERT DROPDOWN */
+function toggleAlert(){
+  const dropdown = document.getElementById("alert-dropdown");
+  dropdown.classList.toggle("show");
+}
+
+/* LOAD ALERTS FROM SERVER */
+async function loadAlerts(){
+
+  try{
+
+    const res = await fetch("/alerts");
+    const alerts = await res.json();
+
+    const list = document.getElementById("alert-list");
+    const count = document.getElementById("alert-count");
+
+    count.innerText = alerts.length;
+
+    if(alerts.length === 0){
+      list.innerHTML = "<p>No alerts</p>";
+      return;
     }
-  });
+
+    let html = "";
+
+    alerts.forEach(item => {
+      html += `
+        <div class="alert-item">
+          ⚠ Stock Alert: <b>${item.name}</b> only have stock ${item.stock}
+        </div>
+      `;
+    });
+
+    list.innerHTML = html;
+
+  }catch(err){
+    console.error("Alert error:", err);
+  }
+
+}
+
+/* INIT */
+loadAlerts();
+
+/* AUTO REFRESH ALERT */
+setInterval(loadAlerts, 5000);
+
+/* ICON */
+lucide.createIcons();
+
 </script>
-<script>
-  lucide.createIcons();
-</script>
+
 </body>
 </html>

@@ -253,6 +253,9 @@ app.use("/sales", checkAuth, require("./routes/sales"));
 // SEMUA USER
 app.use("/profile", checkAuth, require("./routes/profile"));
 
+// ALERT
+app.use("/alerts", checkAuth, require("./routes/alerts"));
+
 /* ====================== LOGOUT ====================== */
 app.get("/logout", (req, res) => {
 

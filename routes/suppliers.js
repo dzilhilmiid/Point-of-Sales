@@ -1,21 +1,28 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
-const bcrypt = require("bcrypt"); 
 
-/* =============== READ + SEARCH + SORT + PAGINATION ===================== */
-router.get('/', async (req, res) => {
+/* ================= READ + SEARCH + SORT + PAGINATION ================= */
+router.get("/", async (req, res) => {
   try {
-    let search = req.query.search || '';
-    let sort = req.query.sort || 'supplier_id';
-    let order = req.query.order || 'ASC';
+
+    let search = req.query.search || "";
+    let sort = req.query.sort || "supplier_id";
+    let order = req.query.order || "ASC";
     let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 10;
-    let offset = (page - 1) * limit;
 
-    let keyword = `%${search}%`;
+    const offset = (page - 1) * limit;
 
-    // COUNT DATA
+    const keyword = `%${search}%`;
+
+    /* ===== SORT SECURITY ===== */
+    const allowedSort = ["supplier_id", "name", "phone", "address"];
+    if (!allowedSort.includes(sort)) sort = "supplier_id";
+
+    order = order === "DESC" ? "DESC" : "ASC";
+
+    /* ===== COUNT DATA ===== */
     const countQuery = `
       SELECT COUNT(*) 
       FROM suppliers
@@ -25,12 +32,14 @@ router.get('/', async (req, res) => {
     `;
 
     const countResult = await db.query(countQuery, [keyword, keyword, keyword]);
-    const totalData = countResult.rows[0].count;
+
+    const totalData = parseInt(countResult.rows[0].count);
     const totalPages = Math.ceil(totalData / limit);
 
-    // GET DATA
+    /* ===== GET DATA ===== */
     const dataQuery = `
-      SELECT * FROM suppliers
+      SELECT *
+      FROM suppliers
       WHERE name ILIKE $1
       OR address ILIKE $2
       OR phone ILIKE $3
@@ -38,9 +47,15 @@ router.get('/', async (req, res) => {
       LIMIT $4 OFFSET $5
     `;
 
-    const results = await db.query(dataQuery, [keyword, keyword, keyword, limit, offset]);
+    const results = await db.query(dataQuery, [
+      keyword,
+      keyword,
+      keyword,
+      limit,
+      offset
+    ]);
 
-    res.render('suppliers', {
+    res.render("suppliers/index", {
       suppliers: results.rows,
       search,
       sort,
@@ -51,92 +66,114 @@ router.get('/', async (req, res) => {
     });
 
   } catch (err) {
+
     console.error(err);
     res.send("Error ambil data suppliers");
+
   }
 });
 
-
-/* ============================ ADD SUPPLIER =========================*/
-router.get('/add', (req, res) => {
-  res.render('suppliers/add');
+/* ================= ADD SUPPLIER ================= */
+router.get("/add", (req, res) => {
+  res.render("suppliers/add");
 });
 
-router.post('/', async (req, res) => {
+
+router.post("/", async (req, res) => {
   try {
+
     const { name, address, phone } = req.body;
 
-    const sql = `
-      INSERT INTO suppliers (name, address, phone)
-      VALUES ($1, $2, $3)
-    `;
+    await db.query(
+      `INSERT INTO suppliers (name, address, phone)
+       VALUES ($1,$2,$3)`,
+      [name, address, phone]
+    );
 
-    await db.query(sql, [name, address, phone]);
-    res.redirect('/suppliers');
+    res.redirect("/suppliers");
 
   } catch (err) {
+
     console.error(err);
     res.send("Error tambah supplier");
+
   }
 });
 
-
-/* ================ EDIT SUPPLIERS ================ */
-router.get('/edit/:id', async (req, res) => {
+/* ================= EDIT SUPPLIER ================= */
+router.get("/edit/:id", async (req, res) => {
   try {
+
     const id = req.params.id;
 
     const result = await db.query(
-      "SELECT * FROM suppliers WHERE supplier_id = $1",
+      `SELECT *
+       FROM suppliers
+       WHERE supplier_id=$1`,
       [id]
     );
 
-    res.render('suppliers/edit', { supplier: result.rows[0] });
+    if (result.rows.length === 0) {
+      return res.send("Supplier tidak ditemukan");
+    }
+
+    res.render("suppliers/edit", {
+      supplier: result.rows[0]
+    });
 
   } catch (err) {
+
     console.error(err);
     res.send("Error ambil data supplier");
+
   }
 });
 
-router.put('/:id', async (req, res) => {
+/* ================= UPDATE SUPPLIER ================= */
+router.post("/update/:id", async (req, res) => {
   try {
+
     const id = req.params.id;
     const { name, address, phone } = req.body;
 
-    const sql = `
-      UPDATE suppliers
-      SET name=$1, address=$2, phone=$3
-      WHERE supplier_id=$4
-    `;
+    await db.query(
+      `UPDATE suppliers
+       SET name=$1,
+           address=$2,
+           phone=$3
+       WHERE supplier_id=$4`,
+      [name, address, phone, id]
+    );
 
-    await db.query(sql, [name, address, phone, id]);
-    res.redirect('/suppliers');
+    res.redirect("/suppliers");
 
   } catch (err) {
+
     console.error(err);
     res.send("Error update supplier");
+
   }
 });
 
-
-// ==============================
-// DELETE SUPPLIER
-// ==============================
-router.delete('/:id', async (req, res) => {
+/* ================= DELETE SUPPLIER ================= */
+router.get("/delete/:id", async (req, res) => {
   try {
+
     const id = req.params.id;
 
     await db.query(
-      "DELETE FROM suppliers WHERE supplier_id=$1",
+      `DELETE FROM suppliers
+       WHERE supplier_id=$1`,
       [id]
     );
 
-    res.redirect('/suppliers');
+    res.redirect("/suppliers");
 
   } catch (err) {
+
     console.error(err);
     res.send("Error delete supplier");
+
   }
 });
 
