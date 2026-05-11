@@ -151,6 +151,17 @@ setInterval(loadAlerts, 5000);
 /* ICON */
 lucide.createIcons();
 
+window.addEventListener("click", function(e){
+
+  const dropdown = document.getElementById("alert-dropdown");
+  const trigger = document.querySelector(".alert-trigger");
+
+  if(!trigger.contains(e.target) && !dropdown.contains(e.target)){
+    dropdown.classList.remove("show");
+  }
+
+});
+
 </script>
 
 </body>

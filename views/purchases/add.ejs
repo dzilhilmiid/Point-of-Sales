@@ -71,7 +71,7 @@ value="0">
 
 <script>
 
-const goodsData = <%- JSON.stringify(Array.isArray(goods) ? goods : []) %>;
+const goodsData = JSON.parse('<%- JSON.stringify(Array.isArray(goods) ? goods : []) %>');
 
 let index = 0;
 
@@ -87,7 +87,7 @@ let html = `
 <select name="items[${index}][goods_id]" class="form-control">
 
 ${goodsData.map(g => `
-<option value="${g.goods_id}">
+<option value="${g.id}">
 ${g.name}
 </option>
 `).join("")}

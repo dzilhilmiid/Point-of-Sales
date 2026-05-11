@@ -8,9 +8,9 @@ router.get("/", async (req, res) => {
 
     const result = await db.query(`
       SELECT id, barcode, name, stock, min_stock
-      FROM goods
-      WHERE stock <= min_stock
-      ORDER BY stock ASC
+    FROM goods
+    WHERE stock <= COALESCE(min_stock,0)
+    ORDER BY stock ASC
     `);
 
     res.json(result.rows);

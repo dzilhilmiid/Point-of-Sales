@@ -321,6 +321,85 @@ body {
   border-left: 5px solid #3b82f6;
 }
 
+/* ================= ALERT MENU ================= */
+.alert-menu {
+  position: relative;
+  display: inline-block;
+}
+
+/* ICON TRIGGER */
+.alert-trigger{
+  cursor: pointer;
+  font-size: 18px;
+  position: relative;
+}
+
+/* BADGE JUMLAH ALERT */
+.badge{
+  background: red;
+  color: white;
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 50%;
+  position: absolute;
+  top: -6px;
+  right: -10px;
+}
+
+/* ================= DROPDOWN ================= */
+
+.alert-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 280px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  display: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 999;
+  overflow: hidden;
+}
+
+/* SHOW DROPDOWN */
+.alert-dropdown.show {
+  display: block;
+}
+
+/* HEADER */
+.alert-dropdown h4{
+  margin: 0;
+  padding: 12px;
+  font-size: 14px;
+  background: #f7f7f7;
+  border-bottom: 1px solid #eee;
+}
+
+/* ALERT LIST */
+#alert-list{
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* ITEM */
+.alert-item{
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* HOVER EFFECT */
+.alert-item:hover{
+  background: #f5f5f5;
+}
+
+/* LAST ITEM */
+.alert-item:last-child{
+  border-bottom: none;
+}
+
 /* MAIN AREA */
 .dashboard-main {
   display: grid;
@@ -590,4 +669,3 @@ body {
 .btn-cancel:hover {
   background: #cbd5f5;
 }
-
